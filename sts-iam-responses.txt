@@ -1,0 +1,485 @@
+test_basic_request
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+host:sts.amazonaws.com
+x-amz-date:20220125T063926Z
+
+host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063926Z
+20220125/us-east-1/sts/aws4_request
+269b8e2bb3007dc04c60938b43f04eadfa4203c39431516d027e20c5fff561cb
+{'x-amz-date': '20220125T063926Z', 'host': 'sts.amazonaws.com', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220125/us-east-1/sts/aws4_request, SignedHeaders=host;x-amz-date, Signature=38d4066d5c93e57562e590c73b22acf001036feff5fb9a4010042df53e3df3ce'}
+<GetCallerIdentityResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">
+  <GetCallerIdentityResult>
+    <Arn>arn:aws:iam::557925715019:user/dacut</Arn>
+    <UserId>AIDAIJWMHBRRKE2C7J3HI</UserId>
+    <Account>557925715019</Account>
+  </GetCallerIdentityResult>
+  <ResponseMetadata>
+    <RequestId>06e17472-057e-42f2-85b3-2d430181a0b2</RequestId>
+  </ResponseMetadata>
+</GetCallerIdentityResponse>
+
+------------------------------------------------------------------------------
+test_unsigned_request
+HTTP Error 403: 
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>MissingAuthenticationToken</Code>\n    <Message>Request is missing Authentication Token</Message>\n  </Error>\n  <RequestId>f0f497a0-7f71-4def-b552-2634c6268bba</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_unicode_header
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+hello:ÿ
+host:sts.amazonaws.com
+x-amz-date:20220125T063928Z
+
+hello;host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063928Z
+20220125/us-east-1/sts/aws4_request
+b5b5da70a60af06b60ba9108bb87adbcba61d6b77d41b843c91636faad49c950
+{'x-amz-date': '20220125T063928Z', 'host': 'sts.amazonaws.com', 'hello': 'ÿ', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220125/us-east-1/sts/aws4_request, SignedHeaders=hello;host;x-amz-date, Signature=1b12d38c6c475bf8865a496b04554b52ccc3f1c2383a4c6d847b7a630eee287d'}
+<GetCallerIdentityResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">
+  <GetCallerIdentityResult>
+    <Arn>arn:aws:iam::557925715019:user/dacut</Arn>
+    <UserId>AIDAIJWMHBRRKE2C7J3HI</UserId>
+    <Account>557925715019</Account>
+  </GetCallerIdentityResult>
+  <ResponseMetadata>
+    <RequestId>090d2b79-fe50-4fbc-a5c4-c01b6c87bb79</RequestId>
+  </ResponseMetadata>
+</GetCallerIdentityResponse>
+
+------------------------------------------------------------------------------
+test_nonunicode_header
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+hello:â¬
+host:sts.amazonaws.com
+x-amz-date:20220125T063929Z
+
+hello;host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063929Z
+20220125/us-east-1/sts/aws4_request
+ff52977c0cd4edcfb5242ff80aa911e4b109aec0790a099f5ae2e960db6d4558
+{'x-amz-date': b'20220125T063929Z', 'host': b'sts.amazonaws.com', 'hello': b'\xe2\x82\xac', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220125/us-east-1/sts/aws4_request, SignedHeaders=hello;host;x-amz-date, Signature=505cda1f6ef5e8200b3c4072502ca66e5e3cbcbd7ff069d8d6bdc02545597988'}
+200 
+b'<GetCallerIdentityResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <GetCallerIdentityResult>\n    <Arn>arn:aws:iam::557925715019:user/dacut</Arn>\n    <UserId>AIDAIJWMHBRRKE2C7J3HI</UserId>\n    <Account>557925715019</Account>\n  </GetCallerIdentityResult>\n  <ResponseMetadata>\n    <RequestId>526a880c-5bbb-436d-852d-1f6fa5bbdc63</RequestId>\n  </ResponseMetadata>\n</GetCallerIdentityResponse>\n'
+------------------------------------------------------------------------------
+test_bad_escape_uri
+creq:
+GET
+/%
+Action=GetCallerIdentity&Version=2011-06-15
+host:sts.amazonaws.com
+x-amz-date:20220125T063930Z
+
+host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063930Z
+20220125/us-east-1/sts/aws4_request
+10ba46748c9ea694462c29350be9eb0cdf90cecd48d37c7b34fea644e7883872
+400 
+Transfer-Encoding: chunked
+Date: Tue, 25 Jan 2022 06:39:31 GMT
+Connection: close
+b''
+------------------------------------------------------------------------------
+test_uri_with_qmark
+creq:
+GET
+/%25FF
+Action=GetCallerIdentity&Version=2011-06-15
+host:sts.amazonaws.com
+x-amz-date:20220125T063934Z
+
+host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063934Z
+20220125/us-east-1/sts/aws4_request
+a461b388f6959fb686c2029d3d958c1301b4e75f028f386be8244dfbb189f6f7
+403 
+x-amzn-RequestId: 610f2eae-815c-4945-8c3c-86be826d899b
+Content-Type: text/xml
+Content-Length: 431
+Date: Tue, 25 Jan 2022 06:39:35 GMT
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>SignatureDoesNotMatch</Code>\n    <Message>The request signature we calculated does not match the signature you provided. Check your AWS Secret Access Key and signing method. Consult the service documentation for details.</Message>\n  </Error>\n  <RequestId>610f2eae-815c-4945-8c3c-86be826d899b</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_uri_above_root
+creq:
+GET
+/x
+Action=GetCallerIdentity&Version=2011-06-15
+host:sts.amazonaws.com
+x-amz-date:20220125T063936Z
+
+host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063936Z
+20220125/us-east-1/sts/aws4_request
+92b71b885dc498c274b31f0f4059cd8cfa2a7aa7770ac46238b4a3fdb6dda380
+200 
+x-amzn-RequestId: 6108d83c-1a1d-4162-b5a0-b1b9223f6645
+Content-Type: text/xml
+Content-Length: 402
+Date: Tue, 25 Jan 2022 06:39:35 GMT
+b'<GetCallerIdentityResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <GetCallerIdentityResult>\n    <Arn>arn:aws:iam::557925715019:user/dacut</Arn>\n    <UserId>AIDAIJWMHBRRKE2C7J3HI</UserId>\n    <Account>557925715019</Account>\n  </GetCallerIdentityResult>\n  <ResponseMetadata>\n    <RequestId>6108d83c-1a1d-4162-b5a0-b1b9223f6645</RequestId>\n  </ResponseMetadata>\n</GetCallerIdentityResponse>\n'
+------------------------------------------------------------------------------
+test_date_too_far_in_past_request
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+host:sts.amazonaws.com
+x-amz-date:20220125T060936Z
+
+host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T060936Z
+20220125/us-east-1/sts/aws4_request
+92500e678db468ba796025c5cf0b859b3c491ddd4c97594e2c2d039cf4010e61
+{'x-amz-date': '20220125T060936Z', 'host': 'sts.amazonaws.com', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220125/us-east-1/sts/aws4_request, SignedHeaders=host;x-amz-date, Signature=df8c897b5ce235550ae40169f133bc0bd476c16eb3889024dfe9339d858a967a'}
+HTTP Error 403: 
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>SignatureDoesNotMatch</Code>\n    <Message>Signature expired: 20220125T060936Z is now earlier than 20220125T062438Z (20220125T063938Z - 15 min.)</Message>\n  </Error>\n  <RequestId>9ec9e871-6d6d-40d1-ae62-be2711c15f80</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_date_too_far_in_future_request
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+host:sts.amazonaws.com
+x-amz-date:20220125T070938Z
+
+host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T070938Z
+20220125/us-east-1/sts/aws4_request
+ab1ae89fd4cdede68b08f17d8628121dbf52f1e76bd539be2fac47351142d95d
+{'x-amz-date': '20220125T070938Z', 'host': 'sts.amazonaws.com', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220125/us-east-1/sts/aws4_request, SignedHeaders=host;x-amz-date, Signature=b94a2cda52ba35267d7678a674430fae1db75b4fd8f173aec97077433a60d4be'}
+HTTP Error 403: 
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>SignatureDoesNotMatch</Code>\n    <Message>Signature not yet current: 20220125T070938Z is still later than 20220125T065438Z (20220125T063938Z + 15 min.)</Message>\n  </Error>\n  <RequestId>5bb257b0-7b68-4196-a1ec-0f6a47a32b1f</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_cscope_wrong_date
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+host:sts.amazonaws.com
+x-amz-date:20220125T063938Z
+
+host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063938Z
+20220123/us-east-1/sts/aws4_request
+4c8075be87d44bd14792f5e8c1f686c39a978608e8a3ad28bc5d319377da353c
+{'x-amz-date': '20220125T063938Z', 'host': 'sts.amazonaws.com', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220123/us-east-1/sts/aws4_request, SignedHeaders=host;x-amz-date, Signature=a0721bc554765d40d032885969813661234d55fbf132da1730f9408d0b4ceb1c'}
+HTTP Error 403: 
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>SignatureDoesNotMatch</Code>\n    <Message>Date in Credential scope does not match YYYYMMDD from ISO-8601 version of date from HTTP: \'20220123\' != \'20220125\', from \'20220125T063938Z\'.</Message>\n  </Error>\n  <RequestId>89d0d032-ceef-4db8-bfd9-d76c089b6707</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_cscope_wrong_region
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+host:sts.amazonaws.com
+x-amz-date:20220125T063939Z
+
+host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063939Z
+20220125/us-east-99/sts/aws4_request
+84546995b1b0601f8462fce9d49a838a8b1ad89d649c9564b7a773495a3a3e93
+{'x-amz-date': '20220125T063939Z', 'host': 'sts.amazonaws.com', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220125/us-east-99/sts/aws4_request, SignedHeaders=host;x-amz-date, Signature=c7fba0221b5fe6ad262618b50b2b59691d966153f5a2ca619bb6ef93b83dfc4e'}
+HTTP Error 403: 
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>SignatureDoesNotMatch</Code>\n    <Message>Credential should be scoped to a valid region, not \'us-east-99\'. </Message>\n  </Error>\n  <RequestId>03b0a143-8260-4bd8-8361-a3971c0d46ea</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_cscope_wrong_service
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+host:sts.amazonaws.com
+x-amz-date:20220125T063939Z
+
+host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063939Z
+20220125/us-east-1/foo/aws4_request
+84546995b1b0601f8462fce9d49a838a8b1ad89d649c9564b7a773495a3a3e93
+{'x-amz-date': '20220125T063939Z', 'host': 'sts.amazonaws.com', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220125/us-east-1/foo/aws4_request, SignedHeaders=host;x-amz-date, Signature=f9b6443e561b5e243e0631f91952293a850815f4c1a60738f13b7c5aa10171c0'}
+HTTP Error 403: 
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>SignatureDoesNotMatch</Code>\n    <Message>Credential should be scoped to correct service: \'sts\'. </Message>\n  </Error>\n  <RequestId>4d6e7baa-2f6a-45bb-8923-54008090a0c4</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_cscope_wrong_terminator
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+host:sts.amazonaws.com
+x-amz-date:20220125T063940Z
+
+host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063940Z
+20220125/us-east-1/sts/aws5_request
+0682d9830edca1ea90021d3e715c648b83c33f4d3be0bb75f084ff86f7023473
+{'x-amz-date': '20220125T063940Z', 'host': 'sts.amazonaws.com', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220125/us-east-1/sts/aws5_request, SignedHeaders=host;x-amz-date, Signature=2b83bd5392a7d3d55268147e7f80103db402bb1bbb7d2bcdadf079ddbc452d5f'}
+HTTP Error 403: 
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>SignatureDoesNotMatch</Code>\n    <Message>Credential should be scoped with a valid terminator: \'aws4_request\', not \'aws5_request\'. </Message>\n  </Error>\n  <RequestId>3564f682-0f76-4c10-b04c-d805efac3582</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_cscope_wrong_everything
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+host:sts.amazonaws.com
+x-amz-date:20220125T063941Z
+
+host;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063941Z
+20220127/us-east-99/foo/aws5_request
+10b56ca764065ab2e155b2fa18556af9828e04f8d437e0a0a725ce1dfd56939a
+{'x-amz-date': '20220125T063941Z', 'host': 'sts.amazonaws.com', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220127/us-east-99/foo/aws5_request, SignedHeaders=host;x-amz-date, Signature=e1fdb6b4d26fc407d77ae3306054d83f8cfffe5adb41f03e1c68f4a9acca5193'}
+HTTP Error 403: 
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>SignatureDoesNotMatch</Code>\n    <Message>Credential should be scoped to a valid region, not \'us-east-99\'. Credential should be scoped to correct service: \'sts\'. Credential should be scoped with a valid terminator: \'aws4_request\', not \'aws5_request\'. Date in Credential scope does not match YYYYMMDD from ISO-8601 version of date from HTTP: \'20220127\' != \'20220125\', from \'20220125T063941Z\'.</Message>\n  </Error>\n  <RequestId>96947f7e-d87d-46e9-a937-2416901dd108</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_cscope_rfc_1123_date
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+date:Tue, 25 Jan 2022 06:39:43 GMT
+host:sts.amazonaws.com
+
+date;host
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+Tue, 25 Jan 2022 06:39:43 GMT
+20220125/us-east-1/sts/aws4_request
+ecc5497ff7e0f4e7c2cdfc36ce9d58c7ad01a1b0c68811e39028e72b0d5eca13
+{'date': 'Tue, 25 Jan 2022 06:39:43 GMT', 'host': 'sts.amazonaws.com', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220125/us-east-1/sts/aws4_request, SignedHeaders=date;host, Signature=6cc958113dbdf65c36d9b0a4fee5827fc5271adc44d32250706dbb58010f3a95'}
+HTTP Error 400: 
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>IncompleteSignature</Code>\n    <Message>Date must be in ISO-8601 \'basic format\'. Got \'Tue, 25 Jan 2022 06:39:43 GMT\'. See http://en.wikipedia.org/wiki/ISO_8601</Message>\n  </Error>\n  <RequestId>f596a45b-7940-436c-a38c-182461cd5a6c</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_cscope_iso_8601_ext_date
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+date:2022-01-25T06:39:44Z
+host:sts.amazonaws.com
+
+date;host
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063944Z
+20220125/us-east-1/sts/aws4_request
+533d6165bc5664cea56e81ae5fffef9b98ad7f1dc29340882557c2ae2fa04b8f
+{'date': '2022-01-25T06:39:44Z', 'host': 'sts.amazonaws.com', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220125/us-east-1/sts/aws4_request, SignedHeaders=date;host, Signature=917e3f00faf1d108b55f68c6a915ca72e2b827c51ddcd9022be64464c818ada9'}
+<GetCallerIdentityResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">
+  <GetCallerIdentityResult>
+    <Arn>arn:aws:iam::557925715019:user/dacut</Arn>
+    <UserId>AIDAIJWMHBRRKE2C7J3HI</UserId>
+    <Account>557925715019</Account>
+  </GetCallerIdentityResult>
+  <ResponseMetadata>
+    <RequestId>0d2b69b9-fc10-4db0-bfe4-63ae5ea67c49</RequestId>
+  </ResponseMetadata>
+</GetCallerIdentityResponse>
+
+------------------------------------------------------------------------------
+test_cscope_rfc_3339_date
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+date:20220125 06:39:46Z
+host:sts.amazonaws.com
+
+date;host
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063946Z
+20220125/us-east-1/sts/aws4_request
+ffa8f1fe954061d0bdfc361562ba860944a432b090a7d1e13dcf10dcad265886
+{'date': '20220125 06:39:46Z', 'host': 'sts.amazonaws.com', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220125/us-east-1/sts/aws4_request, SignedHeaders=date;host, Signature=7c55c434a8879347fc00999fded8ec41497b573b1d47bc02069233586b3a6829'}
+HTTP Error 400: 
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>IncompleteSignature</Code>\n    <Message>Date must be in ISO-8601 \'basic format\'. Got \'20220125 06:39:46Z\'. See http://en.wikipedia.org/wiki/ISO_8601</Message>\n  </Error>\n  <RequestId>7507451b-fc47-45c2-9e69-d1ba7c7b6570</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_cscope_iso_8601_micros
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15
+date:20220125T06:39:46.921494Z
+host:sts.amazonaws.com
+
+date;host
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063946Z
+20220125/us-east-1/sts/aws4_request
+f5c2847b9211f81c89463d734beb91f49a95330582beeedf13503d33fc35fead
+{'date': '20220125T06:39:46.921494Z', 'host': 'sts.amazonaws.com', 'authorization': 'AWS4-HMAC-SHA256 Credential=AKIAICTBMFBYXUSA3IOQ/20220125/us-east-1/sts/aws4_request, SignedHeaders=date;host, Signature=e1d5cd4fae5317d5fe1bcf92b386dcca1ee8513476ea3250ca1bdce778ed26cf'}
+<GetCallerIdentityResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">
+  <GetCallerIdentityResult>
+    <Arn>arn:aws:iam::557925715019:user/dacut</Arn>
+    <UserId>AIDAIJWMHBRRKE2C7J3HI</UserId>
+    <Account>557925715019</Account>
+  </GetCallerIdentityResult>
+  <ResponseMetadata>
+    <RequestId>8401fca7-6e7c-46fb-b9d3-86cbe1bfb02b</RequestId>
+  </ResponseMetadata>
+</GetCallerIdentityResponse>
+
+------------------------------------------------------------------------------
+test_mutiple_dates_query_string
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAICTBMFBYXUSA3IOQ%2F20220125%2Fus-east-1%2Fsts%2Faws4_request&X-Amz-Date=20220120T063948Z&X-Amz-Date=20220125T063948Z&X-Amz-SignedHeaders=host
+host:sts.amazonaws.com
+
+host
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063948Z
+20220125/us-east-1/sts/aws4_request
+2c855e8115eb4bf8d0e3576e8bdb913a8f5d6c75733da6c3fbd20749ca5d0161
+<GetCallerIdentityResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">
+  <GetCallerIdentityResult>
+    <Arn>arn:aws:iam::557925715019:user/dacut</Arn>
+    <UserId>AIDAIJWMHBRRKE2C7J3HI</UserId>
+    <Account>557925715019</Account>
+  </GetCallerIdentityResult>
+  <ResponseMetadata>
+    <RequestId>0df9e1b9-4b5d-4336-ad71-0bc81cd0e456</RequestId>
+  </ResponseMetadata>
+</GetCallerIdentityResponse>
+
+------------------------------------------------------------------------------
+test_query_string_multiple_signatures
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAICTBMFBYXUSA3IOQ%2F20220125%2Fus-east-1%2Fsts%2Faws4_request&X-Amz-Date=20220125T063948Z&X-Amz-SignedHeaders=host
+host:sts.amazonaws.com
+
+host
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063948Z
+20220125/us-east-1/sts/aws4_request
+1dcfe14c85b1db5fca7924ffb5cb54894cbbaaf77846ff680f7f6b343121f006
+<GetCallerIdentityResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">
+  <GetCallerIdentityResult>
+    <Arn>arn:aws:iam::557925715019:user/dacut</Arn>
+    <UserId>AIDAIJWMHBRRKE2C7J3HI</UserId>
+    <Account>557925715019</Account>
+  </GetCallerIdentityResult>
+  <ResponseMetadata>
+    <RequestId>ade32330-58d2-4702-9a04-851305a10144</RequestId>
+  </ResponseMetadata>
+</GetCallerIdentityResponse>
+
+------------------------------------------------------------------------------
+test_query_string_missing_alg
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15&X-Amz-Credential=AKIAICTBMFBYXUSA3IOQ%2F20220125%2Fus-east-1%2Fsts%2Faws4_request&X-Amz-Date=20220125T063949Z&X-Amz-SignedHeaders=host
+host:sts.amazonaws.com
+
+host
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063949Z
+20220125/us-east-1/sts/aws4_request
+9b1bfd7d550b1444de82481c0cf89efa037180dfa2f7a0feaa5c349d4ca2c2f6
+HTTP Error 403: 
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>MissingAuthenticationToken</Code>\n    <Message>Request is missing Authentication Token</Message>\n  </Error>\n  <RequestId>6e39d77e-0b69-4a4c-a3bf-7964b3576ed6</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_query_string_missing_credential
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20220125T063950Z&X-Amz-SignedHeaders=host
+host:sts.amazonaws.com
+
+host
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063950Z
+20220125/us-east-1/sts/aws4_request
+52c944e9b32f20ff76eb4d159a075910ab129026eaf17b60b8de076793f237fa
+HTTP Error 400: 
+b'<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">\n  <Error>\n    <Type>Sender</Type>\n    <Code>IncompleteSignature</Code>\n    <Message>AWS query-string parameters must include \'X-Amz-Credential\'. Re-examine the query-string parameters.</Message>\n  </Error>\n  <RequestId>dd028093-599d-4590-adf2-2fb45e57d7f9</RequestId>\n</ErrorResponse>\n'
+------------------------------------------------------------------------------
+test_query_string_wrong_alg
+creq:
+GET
+/
+Action=GetCallerIdentity&Version=2011-06-15&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Algorithm=AWS5-FOO-BAR&X-Amz-Credential=AKIAICTBMFBYXUSA3IOQ%2F20220125%2Fus-east-1%2Fsts%2Faws4_request&X-Amz-Date=20220125T063951Z&X-Amz-SignedHeaders=host
+host:sts.amazonaws.com
+
+host
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+string to sign:
+AWS4-HMAC-SHA256
+20220125T063951Z
+20220125/us-east-1/sts/aws4_request
+1e865b8f90a9442d718ba53df37759eac3178993c7ba317e972e527ca3103ca6
+<GetCallerIdentityResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">
+  <GetCallerIdentityResult>
+    <Arn>arn:aws:iam::557925715019:user/dacut</Arn>
+    <UserId>AIDAIJWMHBRRKE2C7J3HI</UserId>
+    <Account>557925715019</Account>
+  </GetCallerIdentityResult>
+  <ResponseMetadata>
+    <RequestId>1a2648a4-4813-447b-92ca-f908b6bbef29</RequestId>
+  </ResponseMetadata>
+</GetCallerIdentityResponse>
+
+------------------------------------------------------------------------------
